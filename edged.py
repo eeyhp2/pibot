@@ -15,26 +15,37 @@ def capture():
     I = cv2.resize(I, (0, 0), fx=0.4, fy=0.4)
     return I
 
-def detectedges(img):
-    #Canny edge detection
-    threshold = 100
+def cannydetection(img):
+	threshold = 100
     BW2 = cv2.Canny(img, threshold, threshold*0.4)
     cv2.imwrite('edge.jpg', BW2)
-    
-    #Hough Transform
-    BW3 = cv2.resize(BW2, (0, 0), fx=1/0.4, fy=1/0.4)
+	return None
+	
+def houghdetection(img):
+	BW3 = cv2.resize(cv2.imread('edge.jpg', BW2), (0, 0), fx=1/0.4, fy=1/0.4)
     #lines = cv2.HoughLinesP(BW3, 5, np.pi/180, 500, 100, 800, 200)
     lines = cv2.HoughLinesP(BW3, 1, np.pi/180, 200)
     I = cv2.imread('Image.png')
-    for i in range(len(lines)):
+	for i in range(len(lines)):
         for x1, y1, x2, y2 in lines[i]:
             cv2.line(I, (x1, y1), (x2, y2), (0, 255, 0), 4)
         cv2.imwrite('houghlines.jpg', I)
-    lines = lines.squeeze()
+	lines = lines.squeeze()
     size = BW3.shape
-    return lines, size
+	return lines, size
+
+def detectedges():
+	#Capture image
+	img = capture()
+	
+    #Canny edge detection
+    cannydetection(img)
+	
+    #Hough Transform
+    lines, size = houghdetection(img)
+
+    return None
 
 if __name__ == '__main__':
-    img = capture()
-    lines, size = detectedges(img)
+    detectedges()
     
